@@ -92,21 +92,22 @@ def print_rows():
     # Prints headers for the columns and the values below
     cur.execute('select * from recordHolder')
     print('This is your list: \n')
-    print('ID |Name |Country |Number of Catch')
+    print('ID |Name |Country |Number of Catch') # These are used headers
     for value in cur:
         print(value)
+    print()
 
 def update_option():
     print_rows() # Prints headers for the columns and the values below
     global holderID
     while True:
-        try:
+        try:  # This loop is used to check for int validation.
             holderID = int(input("Enter the ID number of the record holder that " +
             "\nyou want updated: "))
             break
         except Exception as e:
             continue
-    global choose_option
+    global choose_option # This is used for the user input option.
     while True:
         choose_option = input("*Enter* \n'q' to exit, \n'1' for name, \n'2' for country, \n'3' for number of times:\n ")
         if choose_option != 'q' and choose_option != '1' and choose_option != '2' and choose_option != '3':
@@ -114,13 +115,31 @@ def update_option():
         else:
             break
 
-    if choose_option == '1':
+    if choose_option == '1':  # If user enters one, the name is updated
         new_name = input("Enter new name: ")
-        update = '''UPDATE recordHolder
-                SET holder = ?
-                WHERE fileId =?'''
+        # update use parameter to store the values.
+        update = 'UPDATE recordHolder SET holder = ? WHERE fileId =?'
         cur.execute(update, (new_name,  holderID))
         db.commit()
+
+    elif choose_option == '2':  # If user enters two, the country is updated
+        new_country = input("Enter new country: ")
+        update = 'UPDATE recordHolder SET country = ? WHERE fileId =?'
+        cur.execute(update, (new_country,  holderID))
+        db.commit()
+
+    elif choose_option == '3':  # If user enters three, the number of times is updated
+        while True:
+            try:
+                new_number = int(input("Enter new number of catches: "))
+                break
+            except:
+                continue
+        update = 'UPDATE recordHolder SET number = ? WHERE fileId =?'
+        cur.execute(update, (new_number,  holderID))
+        db.commit()
+
+
 
 def main():
     choice()
