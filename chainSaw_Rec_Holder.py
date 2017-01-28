@@ -7,16 +7,15 @@ cur.execute('create table if not exists recordHolder (fileId INTEGER PRIMARY KEY
 
 def choice():
     options = '''\nWhat would you like to do:
-        1. Add
-        2. Show list
-        3. Delete
-        4. Update
-        5. Exit
-        '''     # This is printed to have the user select an option.
+    1. Add / Insert to table
+    2. Show table's items
+    3. Delete row in table
+    4. Update / Edit table
+    5. Exit '''     # This is printed to have the user select an option.
 
     while True:
         print(options)
-        choice = input('Enter your selection: ')
+        choice = input('Enter your selection (*number*): ')
         if choice == '1':
             addHolders() # Add new record holder function
         elif choice == '2':
@@ -37,7 +36,7 @@ def addHolders():
 
     # The program will ask the user if it wants to add another record holder.
     while True:
-        fileId = 'NULL'
+        # fileId = 'NULL'
         holder = input('Enter the name of the record holder: ')
         country = input('Enter the country: ')
         while True: # This while loop is for the int that is needed for number of times
@@ -89,21 +88,22 @@ def show_list():
         print(value)
 
 def print_rows():
+    '''This prints the headers and display the list of item for the user to select or see'''
     # Prints headers for the columns and the values below
     cur.execute('select * from recordHolder')
     print('This is your list: \n')
-    print('ID |Name |Country |Number of Catch') # These are used headers
+    print(' ID  |Name  |Country  |Number of Catch') # These are used headers
     for value in cur:
         print(value)
     print()
 
 def update_option():
+    '''Updates or edit the selected ID, and updates the table'''
     print_rows() # Prints headers for the columns and the values below
     global holderID
     while True:
         try:  # This loop is used to check for int validation.
-            holderID = int(input("Enter the ID number of the record holder that " +
-            "\nyou want updated: "))
+            holderID = int(input("Enter the ID number to UPDATE: "))
             break
         except Exception as e:
             continue
