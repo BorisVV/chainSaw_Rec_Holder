@@ -6,7 +6,7 @@ cur = db.cursor() # Need a cursor object and
 cur.execute('create table if not exists recordHolder (fileId INTEGER PRIMARY KEY, holder text, country text, number int)')
 
 def choice():
-    options = '''What would you like to do:
+    options = '''\nWhat would you like to do:
         1. Add
         2. Show list
         3. Delete
@@ -23,6 +23,8 @@ def choice():
             show_list() # Displays the list function
         elif choice == '3':
             delete_option()
+        elif choice == '4':
+            update_option()
         elif choice == '5':
             break
             # quit() # Closes the db
@@ -67,10 +69,7 @@ def addHolders():
 
 
 def delete_option():
-    cur.execute('select * from recordHolder')
     print_rows() # Prints headers for the columns and the values below
-    for value in cur:
-        print(value)
     # The user is asked to enter the id from the list.
     enterId = int(input('Enter the "ID" of the raw that you want deleted: '))
     delete_raw = 'DELETE FROM recordHolder WHERE fileId=?' # This deletes the by id
@@ -91,8 +90,37 @@ def show_list():
 
 def print_rows():
     # Prints headers for the columns and the values below
-    return print('ID, Name, Country, Number of Catcher')
+    cur.execute('select * from recordHolder')
+    print('This is your list: \n')
+    print('ID |Name |Country |Number of Catch')
+    for value in cur:
+        print(value)
 
+def update_option():
+    print_rows() # Prints headers for the columns and the values below
+    global holderID
+    while True:
+        try:
+            holderID = int(input("Enter the ID number of the record holder that " +
+            "\nyou want updated: "))
+            break
+        except Exception as e:
+            continue
+    global choose_option
+    while True:
+        choose_option = input("*Enter* \n'q' to exit, \n'1' for name, \n'2' for country, \n'3' for number of times:\n ")
+        if choose_option != 'q' and choose_option != '1' and choose_option != '2' and choose_option != '3':
+            continue
+        else:
+            break
+
+    if choose_option == '1':
+        new_name = input("Enter new name: ")
+        update = '''UPDATE recordHolder
+                SET holder = ?
+                WHERE fileId =?'''
+        cur.execute(update, (new_name,  holderID))
+        db.commit()
 
 def main():
     choice()
